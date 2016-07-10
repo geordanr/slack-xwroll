@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.post('/roll', (req, res) => {
-
+    res.set('Content-Type', 'application/json');
     var args, color, number, type;
     try {
         args = req.body.text.split(/\s+/);
