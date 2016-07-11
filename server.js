@@ -5,6 +5,8 @@ var cors = require('cors');
 
 var port = app.get('env') === 'development' ? 3000 : process.env.PORT;
 
+const MAX_ROLLABLE_DICE = 10;
+
 app.use((req, res, next) => {
     console.log(`${new Date().toUTCString()} ${req.ip} ${req.method} ${req.path}`);
     next();
@@ -46,13 +48,15 @@ app.post('/roll', (req, res) => {
 
     var n;
     try {
-        n = Math.max(0, parseInt(number));
+        n = Math.min(Math.max(0, parseInt(number)), MAX_ROLLABLE_DICE);
     } catch (e) {
         complain(res, `Bad number of dice ${number}`);
     }
 
     var result;
     var results = [];
+    var summary = {};
+    var summary_counts = [];
     for (var i = 0; i < n; i++) {
         switch (color) {
             case 'red':
@@ -65,11 +69,19 @@ app.post('/roll', (req, res) => {
                 res.status(500).end(`Impossible die color ${color}`);
         }
         results.push(`:${color}${result}:`);
+        if (!(result in summary)) {
+            summary[result] = 0;
+        }
+        summary[result]++;
+    }
+
+    for (var result of Object.keys(summary).sort()) {
+        summary_counts.push(`${summary[result]} ${result}`);
     }
 
     res.send(JSON.stringify({
         'response_type': 'in_channel',
-        'text': `@${req.body.user_name}: ${results.join(' ')}`,
+        'text': `@${req.body.user_name}: ${summary_counts.join(', ')} - ${results.join(' ')}`,
     }));
 });
 
