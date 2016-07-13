@@ -33,17 +33,24 @@ app.post('/roll', (req, res) => {
         type = args[1];
     } catch (e) {
         complain(res, 'Usage: `/roll N attack|defense`');
+        return
     }
 
-    switch (type) {
+    switch (type.toLowerCase()) {
         case 'attack':
+        case 'att': // Jeff Wilder is lazy
+        case 'atk':
+        case 'red':
             color = 'red';
             break
         case 'defense':
+        case 'def':
+        case 'green':
             color = 'green';
             break
         default:
             complain(res, `Bad die type ${type}`);
+            return
     }
 
     var n;
@@ -51,6 +58,7 @@ app.post('/roll', (req, res) => {
         n = Math.min(Math.max(0, parseInt(number)), MAX_ROLLABLE_DICE);
     } catch (e) {
         complain(res, `Bad number of dice ${number}`);
+        return
     }
 
     var result;
@@ -81,7 +89,7 @@ app.post('/roll', (req, res) => {
 
     res.send(JSON.stringify({
         'response_type': 'in_channel',
-        'text': `@${req.body.user_name}: ${summary_counts.join(', ')} - ${results.join(' ')}`,
+        'text': `@${req.body.user_name}: ${summary_counts.join(', ')} ${results.join(' ')}`,
     }));
 });
 
@@ -118,7 +126,7 @@ function roll(n) {
 }
 
 function complain(res, msg) {
-    res.send(JSON.stringify({
+    res.end(JSON.stringify({
         'text': msg
     }));
 }
