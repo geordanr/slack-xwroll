@@ -6,7 +6,7 @@
 
 `/slashcmd N attack|defense` where `/slashcmd` is whatever you slash command you mapped.
 
-Expects emoji for the following:
+Expects emoji for the following (images in `/icons` directory):
 
 - `:redcrit:`
 - `:redhit:`
