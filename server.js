@@ -3,8 +3,6 @@ var app = express();
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
-var port = app.get('env') === 'development' ? 3000 : process.env.PORT;
-
 const MAX_ROLLABLE_DICE = 10;
 
 app.use((req, res, next) => {
@@ -32,7 +30,7 @@ app.post('/roll', (req, res) => {
         number = args[0];
         type = args[1];
     } catch (e) {
-        complain(res, 'Usage: `/roll N attack|defense`');
+        return complain(res, 'Usage: `/roll N attack|defense`');
     }
 
     switch (type) {
@@ -43,14 +41,14 @@ app.post('/roll', (req, res) => {
             color = 'green';
             break
         default:
-            complain(res, `Bad die type ${type}`);
+            return complain(res, `Bad die type ${type}`);
     }
 
     var n;
     try {
-        n = Math.min(Math.max(0, parseInt(number)), MAX_ROLLABLE_DICE);
+        n = Math.min(Math.max(1, parseInt(number)), MAX_ROLLABLE_DICE);
     } catch (e) {
-        complain(res, `Bad number of dice ${number}`);
+        return complain(res, `Bad number of dice ${number}`);
     }
 
     var result;
@@ -85,10 +83,6 @@ app.post('/roll', (req, res) => {
     }));
 });
 
-app.listen(port, () => {
-    console.log(`Listening on port ${port}...`);
-});
-
 function rollAttackDie() {
     var result = roll(8);
     if (result < 2) {
@@ -118,7 +112,9 @@ function roll(n) {
 }
 
 function complain(res, msg) {
-    res.send(JSON.stringify({
+    return res.send(JSON.stringify({
         'text': msg
     }));
 }
+
+module.exports = app; // used by tests

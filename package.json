@@ -2,18 +2,25 @@
   "name": "slack-xwroll",
   "version": "1.0.0",
   "description": "Backend for Slack X-Wing dice roller command",
-  "main": "server.js",
+  "repository": "https://github.com/geordanr/slack-xwroll",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "mocha",
+    "test:watch": "mocha -w"
   },
   "author": "Geordan Rosario <geordan@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "1.15.2",
-    "cors": "2.7.1",
-    "express": "4.14.0"
+    "body-parser": "1.17.1",
+    "cors": "2.8.1",
+    "express": "4.15.2"
   },
   "devDependencies": {
-    "eslint": "3.0.1"
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "eslint": "^3.18.0",
+    "mocha": "^3.2.0",
+    "supertest": "^3.0.0"
   }
 }
