@@ -33,11 +33,16 @@ app.post('/roll', (req, res) => {
         return complain(res, 'Usage: `/roll N attack|defense`');
     }
 
-    switch (type) {
+    switch (type.toLowerCase()) {
         case 'attack':
+        case 'att': // Jeff Wilder is lazy
+        case 'atk':
+        case 'red':
             color = 'red';
             break
         case 'defense':
+        case 'def':
+        case 'green':
             color = 'green';
             break
         default:
@@ -79,7 +84,7 @@ app.post('/roll', (req, res) => {
 
     res.send(JSON.stringify({
         'response_type': 'in_channel',
-        'text': `@${req.body.user_name}: ${summary_counts.join(', ')} - ${results.join(' ')}`,
+        'text': `@${req.body.user_name}: ${summary_counts.join(', ')} ${results.join(' ')}`,
     }));
 });
 
