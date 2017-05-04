@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var cors = require('cors');
+var request = require('request');
 
 const MAX_ROLLABLE_DICE = 10;
 
