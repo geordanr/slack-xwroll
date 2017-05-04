@@ -88,6 +88,28 @@ app.post('/roll', (req, res) => {
     }));
 });
 
+// Shamelessly stolen from http://www.girliemac.com/blog/2016/10/24/slack-command-bot-nodejs/
+app.get('/slack', (req, res) => {
+    var data = {
+        form: {
+            client_id: process.env.SLACK_CLIENT_ID,
+            client_secret: process.env.SLACK_CLIENT_SECRET,
+            code: req.query.code
+        }
+    };
+    request.post('https://slack.com/api/oauth.access', data, (error, response, body) => {
+        if (!error && response.statusCode == 200) {
+            let token = JSON.parse(body).access_token; // Auth token
+            request.post('https://slack.com/api/team.info', {form: {token: token}}, (error, response, body) => {
+                if (!error && response.statusCode == 200) {
+                    let team = JSON.parse(body).team.domain;
+                    res.redirect('http://' +team+ '.slack.com');
+                }
+            });
+        }
+    });
+});
+
 function rollAttackDie() {
     var result = roll(8);
     if (result < 2) {
