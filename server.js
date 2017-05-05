@@ -103,7 +103,6 @@ app.get('/slack', (req, res) => {
             let token = JSON.parse(body).access_token; // Auth token
             request.post('https://slack.com/api/team.info', {form: {token: token}}, (error, response, body) => {
                 if (!error && response.statusCode == 200) {
-                    console.log(JSON.parse(body));
                     let team = JSON.parse(body).team.domain;
                     res.redirect('http://' +team+ '.slack.com');
                 }
